@@ -1,7 +1,7 @@
 //! Minimal blocking Redis client implementation
 //!
 //! Provides a blocking connect and methods for issuing the supported commands.
-
+#![allow(clippy::needless_doctest_main)]
 use bytes::Bytes;
 use std::time::Duration;
 use tokio::net::ToSocketAddrs;
