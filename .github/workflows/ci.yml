@@ -11,6 +11,7 @@ on: [push, pull_request]
 jobs:
 
   check_clippy:
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +21,7 @@ jobs:
 
       - name: Check diff
         run: git diff --exit-code
+
 
   build:
 
@@ -46,4 +48,10 @@ jobs:
         run: cargo test --verbose --features otel
 
   job2:
+
     needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: byebye
+        run: echo 'Bye, baby! GL!'
