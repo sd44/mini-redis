@@ -1,28 +1,49 @@
-name: CI
+name: sd44 mini-redist study CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+# on:
+#   push:
+#     branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
+
+on: [push, pull_request]
 
 jobs:
+
+  check_clippy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cargo clippy
+        run: cargo clippy --all-targets --all-features --workspace -- -D warnings
+
+      - name: Check diff
+        run: git diff --exit-code
+
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:  # 矩阵
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        # exclude:
+        #   # excludes macOS
+        #   - os: macos-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: cargo build --verbose
-    - name: Build with OTel feature
-      run: cargo build --verbose --features otel
-    - name: Run tests
-      run: cargo test --verbose
-    - name: Run tests with OTel feature
-      run: cargo test --verbose --features otel
-    - name: rustfmt
-      uses: actions-rs/cargo@v1
-      with:
-        command: fmt
-        args: --all -- --check
+
+      - uses: actions/checkout@v3
+      - name: Build
+        run: cargo build --verbose
+      - name: Build with OTel feature
+        run: cargo build --verbose --features otel
+      - name: Build all features
+        run: cargo build --all-features
+      - name: Run tests
+        run: cargo test --verbose
+      - name: Run tests with OTel feature
+        run: cargo test --verbose --features otel
+
+  job2:
+    needs: [build]
