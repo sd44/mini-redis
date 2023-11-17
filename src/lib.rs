@@ -65,6 +65,8 @@ pub const DEFAULT_PORT: u16 = 6379;
 /// and handled during normal execution when a partial frame is received on a
 /// socket. `std::error::Error` is implemented for `parse::Error` which allows
 /// it to be converted to `Box<dyn std::error::Error>`.
+///
+/// NOTE: Error结合Result,方便用于异步程序。
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 
 /// A specialized `Result` type for mini-redis operations.
