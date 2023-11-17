@@ -26,7 +26,11 @@ pub async fn main() -> Result<()> {
     // Get key "hello"
     let result = client.get("hello").await?;
 
-    println!("got value from the server; success={:?}", result.is_some());
+    println!(
+        "got value from the server; results={:#?}, success={:?}",
+        result.clone().unwrap(),
+        result.is_some()
+    );
 
     Ok(())
 }
