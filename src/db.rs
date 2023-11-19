@@ -28,6 +28,8 @@ pub(crate) struct DbDropGuard {
 /// used to expire values after the requested duration has elapsed. The task
 /// runs until all instances of `Db` are dropped, at which point the task
 /// terminates.
+///
+/// NOTE: 使用 `Arc` 实现浅复制
 #[derive(Debug, Clone)]
 pub(crate) struct Db {
     /// Handle to shared state. The background task will also have an
@@ -147,6 +149,8 @@ impl Db {
         //
         // Because data is stored using `Bytes`, a clone here is a shallow
         // clone. Data is not copied.
+        //
+        // NOTE: Bytes的浅复制
         let state = self.shared.state.lock().unwrap();
         state.entries.get(key).map(|entry| entry.data.clone())
     }
@@ -279,6 +283,8 @@ impl Db {
         // Drop the lock before signalling the background task. This helps
         // reduce lock contention by ensuring the background task doesn't
         // wake up only to be unable to acquire the mutex.
+        //
+        // TODO: 不会造成抢不到锁吗？
         drop(state);
         self.shared.background_task.notify_one();
     }
@@ -301,6 +307,8 @@ impl Shared {
         // not able to see "through" the mutex guard and determine that it is
         // safe to access both `state.expirations` and `state.entries` mutably,
         // so we get a "real" mutable reference to `State` outside of the loop.
+        //
+        // TODO: reborrow? 什么意思？
         let state = &mut *state;
 
         // Find all keys scheduled to expire **before** now.
