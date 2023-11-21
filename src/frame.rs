@@ -110,6 +110,7 @@ impl Frame {
                 let line = get_line(src)?.to_vec();
 
                 // Convert the line to a String
+                // NOTE: from_utf8只支持Vec<u8>，不支持 &[u8]
                 let string = String::from_utf8(line)?;
 
                 Ok(Frame::Simple(string))
@@ -177,6 +178,8 @@ impl PartialEq<&str> for Frame {
     fn eq(&self, other: &&str) -> bool {
         match self {
             Frame::Simple(s) => s.eq(other),
+            // TODO: 为什么bytes可以和&str比较？可能因为Bytes::eq的eq实现是
+            // `*self == other[..]` ?
             Frame::Bulk(s) => s.eq(other),
             _ => false,
         }
@@ -272,7 +275,7 @@ impl From<String> for Error {
     }
 }
 
-/// NOTE： 先将&str转换为String，再通过Into调用 From<String> for Error
+/// NOTE： 先将&str转换为String，再通过Into调用 From<String> for Error。
 ///        之后语句类似。
 impl From<&str> for Error {
     fn from(src: &str) -> Error {
