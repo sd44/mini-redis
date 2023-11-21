@@ -57,6 +57,7 @@ impl Connection {
         loop {
             // Attempt to parse a frame from the buffered data. If enough data
             // has been buffered, the frame is returned.
+            // NOTE: ? 先取出Result<Option<Frame>>中的Option<Frame>,再模式匹配Some
             if let Some(frame) = self.parse_frame()? {
                 return Ok(Some(frame));
             }
