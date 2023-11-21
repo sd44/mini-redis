@@ -272,6 +272,8 @@ impl From<String> for Error {
     }
 }
 
+/// NOTE： 先将&str转换为String，再通过Into调用 From<String> for Error
+///        之后语句类似。
 impl From<&str> for Error {
     fn from(src: &str) -> Error {
         src.to_string().into()

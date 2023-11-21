@@ -57,6 +57,7 @@ impl Connection {
         loop {
             // Attempt to parse a frame from the buffered data. If enough data
             // has been buffered, the frame is returned.
+            // NOTE: ? 先取出Result<Option<Frame>>中的Option<Frame>,再if let模式匹配Some
             if let Some(frame) = self.parse_frame()? {
                 return Ok(Some(frame));
             }
@@ -151,11 +152,13 @@ impl Connection {
     /// Write a single `Frame` value to the underlying stream.
     ///
     /// The `Frame` value is written to the socket using the various `write_*`
-    /// functions provided by `AsyncWrite`. Calling these functions directly on
-    /// a `TcpStream` is **not** advised, as this will result in a large number of
-    /// syscalls. However, it is fine to call these functions on a *buffered*
-    /// write stream. The data will be written to the buffer. Once the buffer is
-    /// full, it is flushed to the underlying socket.
+    /// functions provided by `AsyncWrite`.
+    ///
+    /// NOTE: Calling these functions directly on a `TcpStream` is **not**
+    /// advised, as this will result in a large number of syscalls. However,
+    /// it is fine to call these functions on a *buffered* write stream. The
+    /// data will be written to the buffer. Once the buffer is full, it is
+    /// flushed to the underlying socket.
     pub async fn write_frame(&mut self, frame: &Frame) -> io::Result<()> {
         // Arrays are encoded by encoding each entry. All other frame types are
         // considered literals. For now, mini-redis is not able to encode
