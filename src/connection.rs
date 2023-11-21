@@ -93,6 +93,7 @@ impl Connection {
         // buffer. Cursor also implements `Buf` from the `bytes` crate
         // which provides a number of helpful utilities for working
         // with bytes.
+        // NOTE: 注意.. 使用的切片 &[u8]
         let mut buf = Cursor::new(&self.buffer[..]);
 
         // The first step is to check if enough data has been buffered to parse
