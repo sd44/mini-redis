@@ -73,6 +73,7 @@ impl Client {
     /// }
     /// ```
     ///
+    /// NOTE: T: ToSocketAddrs
     pub async fn connect<T: ToSocketAddrs>(addr: T) -> crate::Result<Client> {
         // The `addr` argument is passed directly to `TcpStream::connect`. This
         // performs any asynchronous DNS lookup and attempts to establish the TCP
