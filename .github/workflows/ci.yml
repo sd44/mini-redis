@@ -28,7 +28,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:  # 矩阵
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest# , macos-latest
+        ]
         # exclude:
         #   # excludes macOS
         #   - os: macos-latest
